@@ -1,0 +1,142 @@
+<svg width="100%" viewBox="0 0 680 720" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    text { font-family: sans-serif; fill: #333; }
+    .label-section { font-size: 12px; fill: #888; }
+    .box-title { font-size: 14px; font-weight: 600; fill: #1a1a1a; }
+    .box-sub { font-size: 11px; fill: #555; }
+    .box-blue { fill: #E6F1FB; stroke: #185FA5; stroke-width: 0.5; rx: 8; }
+    .box-teal { fill: #E1F5EE; stroke: #0F6E56; stroke-width: 0.5; }
+    .box-coral { fill: #FAECE7; stroke: #993C1D; stroke-width: 0.5; }
+    .box-amber { fill: #FAEEDA; stroke: #854F0B; stroke-width: 0.5; }
+    .box-purple { fill: #EEEDFE; stroke: #534AB7; stroke-width: 0.5; }
+    .box-green { fill: #EAF3DE; stroke: #3B6D11; stroke-width: 0.5; }
+    .box-gray { fill: #F1EFE8; stroke: #5F5E5A; stroke-width: 0.5; }
+    .container { fill: none; stroke: #aaa; stroke-width: 1; stroke-dasharray: 5 4; }
+    .arrow { fill: none; stroke: #888; stroke-width: 1; marker-end: url(#arrow); }
+    .arrow-green { fill: none; stroke: #1D9E75; stroke-width: 1.5; marker-end: url(#arrow); }
+    .arrow-amber { fill: none; stroke: #BA7517; stroke-width: 1.5; marker-end: url(#arrow); }
+    .arrow-dash { fill: none; stroke: #aaa; stroke-width: 1; stroke-dasharray: 5 3; marker-end: url(#arrow); }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#1D9E75" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#BA7517" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <!-- 섹션 레이블 -->
+  <text class="label-section" x="100" y="24" text-anchor="middle">[채널 어댑터]</text>
+  <text class="label-section" x="340" y="24" text-anchor="middle">[수집 / 파이프라인]</text>
+  <text class="label-section" x="574" y="24" text-anchor="middle">[전달 / 모니터링]</text>
+
+  <!-- 채널 어댑터 컨테이너 -->
+  <rect class="container" x="20" y="38" width="160" height="200" rx="12"/>
+
+  <!-- 쿠팡 -->
+  <rect class="box-blue" x="34" y="54" width="132" height="44" rx="8"/>
+  <text class="box-title" x="100" y="73" text-anchor="middle">쿠팡</text>
+  <text class="box-sub" x="100" y="89" text-anchor="middle">HMAC 인증</text>
+
+  <!-- 지마켓 -->
+  <rect class="box-blue" x="34" y="114" width="132" height="44" rx="8"/>
+  <text class="box-title" x="100" y="133" text-anchor="middle">지마켓</text>
+  <text class="box-sub" x="100" y="149" text-anchor="middle">OAuth2 인증</text>
+
+  <!-- 옥션 -->
+  <rect class="box-blue" x="34" y="174" width="132" height="44" rx="8"/>
+  <text class="box-title" x="100" y="193" text-anchor="middle">옥션</text>
+  <text class="box-sub" x="100" y="209" text-anchor="middle">OAuth2 인증</text>
+
+  <!-- 채널 → Scheduler -->
+  <path class="arrow" d="M166 76 L230 120"/>
+  <path class="arrow" d="M166 136 L230 136"/>
+  <path class="arrow" d="M166 196 L230 150"/>
+  <text class="box-sub" x="196" y="110" text-anchor="middle">normalize</text>
+
+  <!-- Redis -->
+  <rect class="box-coral" x="230" y="54" width="160" height="44" rx="8"/>
+  <text class="box-title" x="310" y="73" text-anchor="middle">Redis</text>
+  <text class="box-sub" x="310" y="89" text-anchor="middle">중복 수집 방지</text>
+
+  <!-- Scheduler -->
+  <rect class="box-teal" x="230" y="108" width="160" height="56" rx="8"/>
+  <text class="box-title" x="310" y="129" text-anchor="middle">Scheduler</text>
+  <text class="box-sub" x="310" y="149" text-anchor="middle">@Scheduled 폴링</text>
+
+  <!-- Scheduler ↔ Redis -->
+  <path class="arrow" d="M310 108 L310 98"/>
+  <path class="arrow" d="M318 98 L318 108"/>
+
+  <!-- Scheduler → RabbitMQ -->
+  <path fill="none" stroke="#1D9E75" stroke-width="1.5" marker-end="url(#arrow-green)" d="M310 164 L310 220"/>
+  <text class="box-sub" x="326" y="196" text-anchor="start">Produce</text>
+
+  <!-- RabbitMQ -->
+  <rect class="box-amber" x="210" y="220" width="200" height="56" rx="8"/>
+  <text class="box-title" x="310" y="241" text-anchor="middle">RabbitMQ</text>
+  <text class="box-sub" x="310" y="259" text-anchor="middle">orders.inbound queue</text>
+
+  <!-- RabbitMQ → 정규화 -->
+  <path fill="none" stroke="#BA7517" stroke-width="1.5" marker-end="url(#arrow-amber)" d="M310 276 L310 330"/>
+  <text class="box-sub" x="326" y="308" text-anchor="start">Consume</text>
+
+  <!-- 주문 정규화 -->
+  <rect class="box-teal" x="210" y="330" width="200" height="56" rx="8"/>
+  <text class="box-title" x="310" y="351" text-anchor="middle">주문 정규화</text>
+  <text class="box-sub" x="310" y="369" text-anchor="middle">표준 포맷 변환</text>
+
+  <!-- 정규화 → PostgreSQL -->
+  <path class="arrow" d="M210 358 L160 358 L160 440 L180 440"/>
+  <text class="box-sub" x="148" y="400" text-anchor="end">저장</text>
+
+  <!-- PostgreSQL -->
+  <rect class="box-purple" x="180" y="418" width="160" height="44" rx="8"/>
+  <text class="box-title" x="260" y="437" text-anchor="middle">PostgreSQL</text>
+  <text class="box-sub" x="260" y="453" text-anchor="middle">주문 / 상태 저장</text>
+
+  <!-- 정규화 → WMS -->
+  <path class="arrow" d="M410 358 L490 358"/>
+  <text class="box-sub" x="448" y="348" text-anchor="middle">전달</text>
+
+  <!-- WMS 컨테이너 -->
+  <rect class="container" x="490" y="310" width="168" height="150" rx="12"/>
+  <text class="box-sub" x="574" y="327" text-anchor="middle">[WMS 전달 레이어]</text>
+
+  <!-- WMS API -->
+  <rect class="box-green" x="504" y="336" width="140" height="44" rx="8"/>
+  <text class="box-title" x="574" y="355" text-anchor="middle">WMS API</text>
+  <text class="box-sub" x="574" y="371" text-anchor="middle">주문 자동 전달</text>
+
+  <!-- Spring Retry -->
+  <rect class="box-coral" x="504" y="396" width="140" height="44" rx="8"/>
+  <text class="box-title" x="574" y="415" text-anchor="middle">Spring Retry</text>
+  <text class="box-sub" x="574" y="431" text-anchor="middle">실패 재시도</text>
+
+  <!-- WMS → Retry -->
+  <path class="arrow" d="M574 380 L574 396"/>
+
+  <!-- PostgreSQL → SSE -->
+  <path class="arrow-dash" d="M260 462 L260 530 L350 530"/>
+
+  <!-- SSE -->
+  <rect class="box-purple" x="350" y="508" width="160" height="44" rx="8"/>
+  <text class="box-title" x="430" y="527" text-anchor="middle">SSE</text>
+  <text class="box-sub" x="430" y="543" text-anchor="middle">실시간 Push</text>
+
+  <!-- SSE → 관리페이지 -->
+  <path class="arrow-dash" d="M430 552 L430 590"/>
+
+  <!-- 관리페이지 -->
+  <rect class="box-gray" x="300" y="590" width="260" height="56" rx="8"/>
+  <text class="box-title" x="430" y="611" text-anchor="middle">관리페이지</text>
+  <text class="box-sub" x="430" y="631" text-anchor="middle">Thymeleaf / 실시간 알림</text>
+
+  <!-- 재고 동기화 -->
+  <path class="arrow-dash" d="M490 440 L490 530 L510 530"/>
+  <text class="box-sub" x="488" y="488" text-anchor="end">재고 동기화</text>
+</svg>

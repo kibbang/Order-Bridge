@@ -20,38 +20,8 @@
 
 ## 시스템 아키텍처
 
-```mermaid
-flowchart TD
-    A1[🛒 스마트스토어] -->|주문 폴링| C
-    A2[🛒 쿠팡] -->|주문 폴링| C
-    A3[🛒 카페24] -->|주문 폴링| C
+![architecture](./docs/architecture.svg)
 
-    subgraph Collector["📦 주문 수집 레이어"]
-        C["Scheduler<br/>@Scheduled"]
-        REDIS[("Redis<br/>중복 수집 방지")]
-        C <-->|멱등성 체크| REDIS
-    end
-
-    C -->|Produce| Q
-
-    subgraph Pipeline["🔄 단일 파이프라인"]
-        Q[["RabbitMQ<br/>orders.inbound"]]
-        N["주문 정규화<br/>표준 포맷 변환"]
-        Q -->|Consume| N
-    end
-
-    N -->|저장| DB[("PostgreSQL")]
-    N -->|전달| W
-
-    subgraph WMS["🏭 WMS 전달 레이어"]
-        W["WMS API 호출"]
-        R["Spring Retry<br/>실패 재시도"]
-        W <-->|실패시 재시도| R
-    end
-
-    DB -->|실시간 조회| SSE["SSE<br/>실시간 Push"]
-    SSE -->|주문 현황| UI["🖥️ 관리페이지<br/>Thymeleaf"]
-```
 
 ---
 
