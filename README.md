@@ -118,7 +118,7 @@ order-bridge/
 cp .env.example .env
 ```
 
-`.env` 파일을 열어 값을 입력해요.
+`.env` 파일을 열어 값을 입력합니다.
 
 ```bash
 # Database
