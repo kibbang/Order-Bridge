@@ -14,7 +14,7 @@
 ![Redis](https://img.shields.io/badge/Redis-7-DC382D?style=for-the-badge&logo=redis&logoColor=white)
 ![Flyway](https://img.shields.io/badge/Flyway-11.x-CC0200?style=for-the-badge&logo=flyway&logoColor=white)
 ![Thymeleaf](https://img.shields.io/badge/Thymeleaf-3.x-005F0F?style=for-the-badge&logo=thymeleaf&logoColor=white)
-![Gradle](https://img.shields.io/badge/Gradle-Kotlin_DSL-02303A?style=for-the-badge&logo=gradle&logoColor=white)
+![Gradle](https://img.shields.io/badge/Gradle-Groovy-02303A?style=for-the-badge&logo=gradle&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 
 ---
