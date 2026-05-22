@@ -1,6 +1,7 @@
 package hello.orderbridge.channel.domain;
 
 import hello.orderbridge.common.domain.BaseEntity;
+import hello.orderbridge.enums.channel.ChannelType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,7 @@ import static lombok.AccessLevel.*;
 @Getter
 @Setter
 @NoArgsConstructor(access = PROTECTED)
+@Table(name = "channels")
 public class Channel extends BaseEntity {
 
     @Id
@@ -42,9 +44,5 @@ public class Channel extends BaseEntity {
 
     public void deactivate() {
         this.isActive = false;
-    }
-
-    public enum ChannelType {
-        SMART_STORE, COUPANG, CAFE24, ETC
     }
 }
