@@ -12,8 +12,9 @@
 ![RabbitMQ](https://img.shields.io/badge/RabbitMQ-3.x-FF6600?style=for-the-badge&logo=rabbitmq&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
 ![Redis](https://img.shields.io/badge/Redis-7-DC382D?style=for-the-badge&logo=redis&logoColor=white)
+![Flyway](https://img.shields.io/badge/Flyway-11.x-CC0200?style=for-the-badge&logo=flyway&logoColor=white)
 ![Thymeleaf](https://img.shields.io/badge/Thymeleaf-3.x-005F0F?style=for-the-badge&logo=thymeleaf&logoColor=white)
-![Gradle](https://img.shields.io/badge/Gradle-Groovy-02303A?style=for-the-badge&logo=gradle&logoColor=white)
+![Gradle](https://img.shields.io/badge/Gradle-Kotlin_DSL-02303A?style=for-the-badge&logo=gradle&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 
 ---
@@ -21,7 +22,6 @@
 ## 시스템 아키텍처
 
 ![architecture](./docs/architecture.svg)
-
 
 ---
 
@@ -36,17 +36,66 @@
 
 ---
 
+## 도메인 설계
+
+### ERD
+
+| 테이블 | 설명 |
+|---|---|
+| `channels` | 채널 마스터 (스마트스토어, 쿠팡, 카페24 등) |
+| `orders` | 수집된 주문 원본 |
+| `order_items` | 주문 상품 — 수량만큼 row 분할 (1개 = 1 row) |
+| `order_status_histories` | 주문 상태 변경 이력 |
+| `wms_deliveries` | WMS 전달 및 재시도 이력 |
+| `claims` | 클레임 공통 부모 (CTI 전략) |
+| `cancels` | 취소 전용 데이터 |
+| `returns` | 반품 전용 데이터 |
+| `exchanges` | 교환 전용 데이터 |
+
+### 주문 상품 분할 전략
+
+주문 1건에 상품 N개 → `order_items`에 N개 row (수량 고정 1)
+부분 취소 / 부분 클레임 / 셀러별 처리를 row 단위로 독립 관리
+
+### 클레임 다형성 구조 (CTI)
+
+JPA `@Inheritance(strategy = InheritanceType.JOINED)` 전략 적용.
+공통 속성은 `claims`, 타입별 고유 속성은 각 자식 테이블에 분리.
+
+```
+Claim (abstract)
+├── Cancel  — 환불금액, 환불수단
+├── Return  — 수거지, 택배사, 운송장번호, 환불금액
+└── Exchange — 교환상품코드, 재발송지, 택배사, 운송장번호
+```
+
+### DB 마이그레이션 (Flyway)
+
+| 버전 | 내용 |
+|---|---|
+| V1 | channels 생성 |
+| V2 | orders 생성 |
+| V3 | order_items 생성 |
+| V4 | order_status_histories 생성 |
+| V5 | wms_deliveries 생성 |
+| V6 | claims / cancels / returns / exchanges 생성 |
+
+---
+
 ## 프로젝트 구조
 
 ```
 order-bridge/
-├── src/main/java/com/orderbridge/
+├── src/main/java/hello/orderbridge/
+│   ├── channel/         # 채널 도메인
+│   ├── order/           # 주문 도메인
+│   ├── claim/           # 클레임 도메인 (취소/반품/교환)
 │   ├── collector/       # 채널별 주문 수집 (Scheduler)
 │   ├── pipeline/        # RabbitMQ 발행/소비
-│   ├── order/           # 주문 도메인
 │   ├── wms/             # WMS 전달
 │   └── common/          # 공통 설정
 ├── src/main/resources/
+│   ├── db/migration/    # Flyway SQL
 │   ├── application.yml
 │   └── templates/       # Thymeleaf
 ├── .env.example
@@ -66,7 +115,6 @@ order-bridge/
 ### 환경변수 설정
 
 ```bash
-# .env.example을 복사하여 .env 파일 생성
 cp .env.example .env
 ```
 
@@ -106,7 +154,7 @@ docker compose down -v
 ### 접속
 
 | 서비스 | URL |
-|--------|-----|
+|---|---|
 | 관리페이지 | http://localhost:8080 |
 | RabbitMQ 관리 UI | http://localhost:15672 |
 
@@ -115,7 +163,7 @@ docker compose down -v
 ## 개발 진행 현황
 
 - [x] Mission 1 - 프로젝트 세팅 + Docker Compose
-- [ ] Mission 2 - 주문 도메인 설계 + ERD
+- [x] Mission 2 - 주문 도메인 설계 + ERD + Entity + Flyway
 - [ ] Mission 3 - 주문 수집 (Scheduler + Collector)
 - [ ] Mission 4 - RabbitMQ 파이프라인
 - [ ] Mission 5 - WMS 전달 + Retry
