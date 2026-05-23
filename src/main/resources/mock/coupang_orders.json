@@ -1,0 +1,210 @@
+{
+  "code": 200,
+  "message": "OK",
+  "data": [
+    {
+      "shipmentBoxId": 642538970006401429,
+      "orderId": 22000009546238,
+      "orderedAt": "2026-05-23T14:17:13.973885-08:00",
+      "orderer": {
+        "name": "신**",
+        "email": "",
+        "safeNumber": "+1(555)444-1234",
+        "ordererNumber": null
+      },
+      "paidAt": "2026-05-23T14:17:13.973885-08:00",
+      "status": "ACCEPT",
+      "shippingPrice": {
+        "currencyCode": "KRW",
+        "units": 2500,
+        "nanos": 0
+      },
+      "remotePrice": null,
+      "remoteArea": false,
+      "parcelPrintMessage": "문 앞",
+      "splitShipping": false,
+      "ableSplitShipping": false,
+      "receiver": {
+        "name": "신**",
+        "safeNumber": "+1(555)444-1234",
+        "receiverNumber": null,
+        "addr1": "경기 성남시 분당구",
+        "addr2": "**동**호",
+        "postCode": "000-000"
+      },
+      "orderItems": [
+        {
+          "vendorItemPackageId": 0,
+          "vendorItemPackageName": "인디고뱅크키즈 기모 테잎배색 트레이닝 팬츠 IKTM17WG1",
+          "productId": 31846051,
+          "vendorItemId": 3242596358,
+          "vendorItemName": "인디고뱅크키즈 기모 테잎배색 트레이닝 팬츠 IKTM17WG1, 07 DARK GREY, 160호",
+          "shippingCount": 1,
+          "salesPrice": {
+            "currencyCode": "KRW",
+            "units": 19900,
+            "nanos": 0
+          },
+          "orderPrice": {
+            "currencyCode": "KRW",
+            "units": 19900,
+            "nanos": 0
+          },
+          "discountPrice": null,
+          "externalVendorSkuCode": "170816368810",
+          "etcInfoHeader": null,
+          "etcInfoValue": null,
+          "etcInfoValues": [
+            "추가메시지1",
+            "추가메시지2"
+          ],
+          "sellerProductId": 80240831,
+          "sellerProductName": "인디고뱅크키즈 A5 기모 배색츄키니 IKTM17WG1",
+          "sellerProductItemName": "07 DARK GREY 160호",
+          "firstSellerProductItemName": "07 DARK GREY/160호",
+          "cancelCount": 0,
+          "holdCountForCancel": 0,
+          "estimatedShippingDate": "2017-10-16",
+          "plannedShippingDate": "",
+          "invoiceNumberUploadDate": "",
+          "extraProperties": {},
+          "pricingBadge": false,
+          "usedProduct": false,
+          "confirmDate": "2026-05-23T14:17:13.973885-08:00",
+          "deliveryChargeTypeName": "유료",
+          "canceled": false
+        }
+      ],
+      "overseaShippingInfoDto": {
+        "personalCustomsClearanceCode": "",
+        "ordererSsn": "",
+        "ordererPhoneNumber": ""
+      },
+      "deliveryCompanyName": "CJ 대한통운",
+      "invoiceNumber": "340010913442",
+      "inTrasitDateTime": "2026-05-23T14:17:13.973885-08:00",
+      "deliveredDate": "2026-05-23T14:17:13.973885-08:00",
+      "refer": "안드로이드앱",
+      "shipmentType": "THIRD_PARTY",
+      "isCod": false,
+      "extraProperties":{
+        "sameDayShipping": "false",
+        "cutOffTimeHour": "0"}
+    },
+    {
+      "shipmentBoxId": 6425389776401428,
+      "orderId": 22000009546630,
+      "orderedAt": "2026-05-23T14:17:13.973885-08:00",
+      "orderer": {
+        "name": "김**",
+        "email": "hs*****@na",
+        "safeNumber": "+1(555)444-1234",
+        "ordererNumber": null
+      },
+      "paidAt": "2026-05-23T14:17:13.973885-08:00",
+      "status": "INSTRUCT",
+      "shippingPrice": {
+        "currencyCode": "KRW",
+        "units": 0,
+        "nanos": 0
+      },
+      "remotePrice": null,
+      "remoteArea": false,
+      "parcelPrintMessage": "직접 받고 부재 시 문 앞",
+      "splitShipping": false,
+      "ableSplitShipping": false,
+      "receiver": {
+        "name": "김*숙",
+        "safeNumber": "+1(555)444-1234",
+        "receiverNumber": null,
+        "addr1": "경기도 고양시 일산동구 백석동 **아파트",
+        "addr2": "303-*",
+        "postCode": "104-48"
+      },
+      "orderItems": [
+        {
+          "vendorItemPackageId": 0,
+          "vendorItemPackageName": "리틀브렌 후드달이 구스 경량 점퍼 LBJD17WG5",
+          "productId": 34047877,
+          "vendorItemId": 3261300431,
+          "vendorItemName": "리틀브렌 후드달이 구스 경량 점퍼 LBJD17WG5, 04 MIDDLE MELANGE GR, 170호",
+          "shippingCount": 1,
+          "salesPrice": {
+            "currencyCode": "KRW",
+            "units": 49900,
+            "nanos": 0
+          },
+          "orderPrice": {
+            "currencyCode": "KRW",
+            "units": 49900,
+            "nanos": 0
+          },
+          "discountPrice": {
+            "currencyCode": "KRW",
+            "units": 500,
+            "nanos": 0
+          },
+          "instantCouponDiscount": {
+            "currencyCode": "KRW",
+            "units": 0,
+            "nanos": 0
+          },
+          "downloadableCouponDiscount": {
+            "currencyCode": "KRW",
+            "units": 500,
+            "nanos": 0
+          },
+          "coupangDiscount": {
+            "currencyCode": "KRW",
+            "units": 0,
+            "nanos": 0
+          },
+          "externalVendorSkuCode": "170824416510",
+          "etcInfoHeader": null,
+          "etcInfoValue": null,
+          "etcInfoValues": [
+            "추가메시지1",
+            "추가메시지2"
+          ],
+          "sellerProductId": 87037167,
+          "sellerProductName": "리틀브렌 후드달이 구스 경량 점퍼 LBJD17WG5",
+          "sellerProductItemName": "04 MIDDLE MELANGE GR 170호",
+          "firstSellerProductItemName": "04 MIDDLE MELANGE GR/170호",
+          "cancelCount": 0,
+          "holdCountForCancel": 0,
+          "estimatedShippingDate": "2017-10-16",
+          "plannedShippingDate": "",
+          "invoiceNumberUploadDate": "",
+          "extraProperties": {},
+          "pricingBadge": false,
+          "usedProduct": false,
+          "confirmDate": "2026-05-23T14:17:13.973885-08:00",
+          "deliveryChargeTypeName": "무료",
+          "canceled": false
+        }
+      ],
+      "overseaShippingInfoDto": {
+        "personalCustomsClearanceCode": "",
+        "ordererSsn": "",
+        "ordererPhoneNumber": ""
+      },
+      "deliveryCompanyName": "CJ 대한통운",
+      "invoiceNumber": "340010912565",
+      "inTrasitDateTime": "2026-05-23T14:17:13.973885-08:00",
+      "deliveredDate": "2026-05-23T14:17:13.973885-08:00",
+      "refer": "안드로이드앱",
+      "shipmentType": "CGF LITE",
+      "isCod": false,
+      "extraProperties": {
+        "taxReceiptInfo": {
+          "appliedValue": null,
+          "receiptOption": "PAPER",
+          "appliedType": "PERSONAL_COUPANG_MEMBER_CARRIER"
+        },
+        "sameDayShipping": "true",
+        "cutOffTimeHour": "18"
+      }
+    }
+  ],
+  "nextToken": "448537989"
+}
