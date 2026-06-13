@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public record RawOrderDto(
-        Long channelOrderNo,      // 채널에서 부여한 주문번호 (중복 체크 키로 사용)
+        String channelOrderNo,      // 채널에서 부여한 주문번호 (중복 체크 키로 사용)
         String ordererName,         // 주문자 이름
         String ordererPhone,        // 주문자 연락처
         String receiverName,        // 수령인 이름

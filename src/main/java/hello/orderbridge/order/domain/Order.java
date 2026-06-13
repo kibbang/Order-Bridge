@@ -93,4 +93,12 @@ public class Order extends BaseEntity {
         this.statusHistories.add(history);
         this.status = newStatus;
     }
+
+    /**
+     * 연관관계 편의 메소드
+     */
+    public void addOrderItem(OrderItem item) {
+        this.items.add(item);
+        item.assignOrder(this);
+    }
 }

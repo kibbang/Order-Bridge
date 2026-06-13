@@ -65,7 +65,7 @@ public class CoupangCollector implements ChannelCollector {
         CoupangOrderer orderer = order.getOrderer();
 
         return new RawOrderDto(
-                order.getOrderId(),
+                String.valueOf(order.getOrderId()),
                 orderer.getName(),
                 orderer.getSafeNumber(),
                 receiver.getName(),
@@ -85,6 +85,7 @@ public class CoupangCollector implements ChannelCollector {
         return new RawOrderItemDto(
                 productCode,
                 item.getVendorItemName(),
+                null,
                 item.getShippingCount(),
                 item.getSalesPrice().getUnits());
     }

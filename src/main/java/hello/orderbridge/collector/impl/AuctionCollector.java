@@ -69,7 +69,7 @@ public class AuctionCollector implements ChannelCollector {
         String deliveryMemo = order.getDelMemo();
 
         return new RawOrderDto(
-                channelOrderNo,
+                String.valueOf(channelOrderNo),
                 ordererName,
                 ordererPhone,
                 receiverName,
@@ -86,6 +86,7 @@ public class AuctionCollector implements ChannelCollector {
         return new RawOrderItemDto(
                 order.getSiteGoodsNo(),
                 order.getGoodsName(),
+                null,
                 order.getContrAmount(),
                 (int) Double.parseDouble(order.getSalePrice())
         );
