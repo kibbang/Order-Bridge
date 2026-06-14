@@ -6,6 +6,7 @@ import hello.orderbridge.order.domain.Order;
 import hello.orderbridge.order.repository.OrderRepository;
 import hello.orderbridge.pipeline.dto.OrderMessage;
 import hello.orderbridge.channel.domain.Channel;
+import hello.orderbridge.wms.WmsService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,6 +24,9 @@ class OrderConsumerTest {
 
     @Mock
     OrderRepository orderRepository;
+
+    @Mock
+    WmsService wmsService;
 
     @InjectMocks
     OrderConsumer orderConsumer;
