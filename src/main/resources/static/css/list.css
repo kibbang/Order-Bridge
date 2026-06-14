@@ -1,0 +1,10 @@
+.summary { display: flex; gap: 16px; margin-bottom: 24px; }
+.summary-card { background: #fff; padding: 20px 24px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); flex: 1; }
+.summary-card .label { font-size: 13px; color: #888; margin-bottom: 4px; }
+.summary-card .value { font-size: 28px; font-weight: 700; color: #333; }
+
+table th { padding: 14px 16px; }
+table td { padding: 14px 16px; font-size: 14px; }
+table tr:hover { background: #f8f9ff; cursor: pointer; }
+
+.empty-msg { text-align: center; padding: 60px; color: #888; font-size: 15px; background: #fff; border-radius: 8px; }
