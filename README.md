@@ -30,8 +30,7 @@
 - **멀티 채널 주문 수집** - `@Scheduled` 기반 주기적 폴링
 - **단일 파이프라인** - RabbitMQ를 통한 채널 통합 처리
 - **주문 정규화** - 채널별 상이한 데이터 포맷을 표준 포맷으로 변환
-- **WMS 자동 전달** - Spring Retry 기반 실패 재시도
-- **중복 수집 방지** - Redis 기반 멱등성 처리
+- **WMS 자동 전달** - RetryTemplate 기반 실패 재시도 (Spring Framework 7.0 내장)
 - **실시간 모니터링** - SSE 기반 관리페이지 실시간 주문 현황
 
 ---
@@ -79,6 +78,7 @@ Claim (abstract)
 | V4 | order_status_histories 생성 |
 | V5 | wms_deliveries 생성 |
 | V6 | claims / cancels / returns / exchanges 생성 |
+| V7 | Spring Security 사용자 설정 |
 
 ---
 
@@ -93,11 +93,13 @@ order-bridge/
 │   ├── collector/       # 채널별 주문 수집 (Scheduler)
 │   ├── pipeline/        # RabbitMQ 발행/소비
 │   ├── wms/             # WMS 전달
-│   └── common/          # 공통 설정
+│   ├── config/          # 설정 (RabbitMQ, Security)
+│   └── common/          # 공통 (BaseEntity, LoginController)
 ├── src/main/resources/
 │   ├── db/migration/    # Flyway SQL
 │   ├── application.yml
-│   └── templates/       # Thymeleaf
+│   ├── templates/       # Thymeleaf (login, order/list, order/detail)
+│   └── static/          # CSS, JS (SSE)
 ├── .env.example
 ├── Dockerfile
 └── docker-compose.yml
@@ -164,7 +166,9 @@ docker compose down -v
 
 - [x] Mission 1 - 프로젝트 세팅 + Docker Compose
 - [x] Mission 2 - 주문 도메인 설계 + ERD + Entity + Flyway
-- [ ] Mission 3 - 주문 수집 (Scheduler + Collector)
-- [ ] Mission 4 - RabbitMQ 파이프라인
-- [ ] Mission 5 - WMS 전달 + Retry
-- [ ] Mission 6 - 관리페이지 (Thymeleaf + SSE)
+- [x] Mission 3 - 주문 수집 (Scheduler + Collector)
+- [x] Mission 4 - RabbitMQ 파이프라인
+- [x] Mission 5 - WMS 전달 + Retry
+- [x] Mission 6 - 관리페이지 (Thymeleaf + SSE)
+- [ ] Mission 7 - 클레임 처리 (취소/반품/교환)
+- [ ] Mission 8 - Redis 활용 (캐싱/중복 방지)
