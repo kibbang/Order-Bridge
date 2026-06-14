@@ -6,6 +6,8 @@ import hello.orderbridge.enums.order.OrderStatus;
 import hello.orderbridge.order.domain.Order;
 import hello.orderbridge.order.domain.OrderItem;
 import hello.orderbridge.order.repository.OrderRepository;
+import hello.orderbridge.pipeline.OrderProducer;
+import hello.orderbridge.pipeline.dto.OrderMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +20,7 @@ import java.util.List;
 public class OrderCollectService {
 
     private final OrderRepository orderRepository;
+    private final OrderProducer orderProducer;
 
     @Transactional
     public void saveOrders(Channel channel, List<RawOrderDto> rawOrders) {
@@ -69,7 +72,14 @@ public class OrderCollectService {
             });
 
             orderRepository.save(order);
-        });
 
+            OrderMessage orderMessage = new OrderMessage(
+                    order.getId(),
+                    order.getChannelOrderNo(),
+                    channel.getType()
+            );
+
+            orderProducer.publish(orderMessage);
+        });
     }
 }

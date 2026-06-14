@@ -8,6 +8,8 @@ import hello.orderbridge.enums.order.ItemStatus;
 import hello.orderbridge.enums.order.OrderStatus;
 import hello.orderbridge.order.domain.Order;
 import hello.orderbridge.order.repository.OrderRepository;
+import hello.orderbridge.pipeline.OrderProducer;
+import hello.orderbridge.pipeline.dto.OrderMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,6 +31,9 @@ class OrderCollectServiceTest {
 
     @Mock
     OrderRepository orderRepository;
+
+    @Mock
+    OrderProducer orderProducer;
 
     @InjectMocks
     OrderCollectService orderCollectService;
@@ -154,6 +159,41 @@ class OrderCollectServiceTest {
 
         Order savedOrder = captor.getValue();
         assertThat(savedOrder.getItems()).hasSize(3); // 1 + 2
+    }
+
+    @Test
+    void 주문_저장_후_RabbitMQ로_메시지를_발행한다() {
+        // Given
+        RawOrderDto rawOrder = createRawOrder("ORD-005", List.of(
+                new RawOrderItemDto("P001", "상품A", "S001", 1, 10000)
+        ));
+        given(orderRepository.existsByChannelOrderNo("ORD-005")).willReturn(false);
+
+        // When
+        orderCollectService.saveOrders(channel, List.of(rawOrder));
+
+        // Then
+        ArgumentCaptor<OrderMessage> captor = ArgumentCaptor.forClass(OrderMessage.class);
+        verify(orderProducer).publish(captor.capture());
+
+        OrderMessage message = captor.getValue();
+        assertThat(message.channelOrderNo()).isEqualTo("ORD-005");
+        assertThat(message.channelType()).isEqualTo(ChannelType.COUPANG);
+    }
+
+    @Test
+    void 중복_주문은_메시지를_발행하지_않는다() {
+        // Given
+        RawOrderDto rawOrder = createRawOrder("ORD-DUP2", List.of(
+                new RawOrderItemDto("P001", "상품A", "S001", 1, 10000)
+        ));
+        given(orderRepository.existsByChannelOrderNo("ORD-DUP2")).willReturn(true);
+
+        // When
+        orderCollectService.saveOrders(channel, List.of(rawOrder));
+
+        // Then
+        verify(orderProducer, never()).publish(any());
     }
 
     private RawOrderDto createRawOrder(String channelOrderNo, List<RawOrderItemDto> items) {
