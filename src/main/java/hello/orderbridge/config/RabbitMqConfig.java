@@ -7,8 +7,14 @@ import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.amqp.support.converter.JacksonJsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 @Configuration
 @Slf4j
@@ -70,5 +76,22 @@ public class RabbitMqConfig {
         return BindingBuilder.bind(ordersQueue) // 이 큐(우체통)를 정해두고 나서 (연결작업 시작)
                 .to(ordersExchange) // 이 Exchange (우편물 취급소)에 부칠건데
                 .with(ORDERS_ROUTING_KEY); // ORDERS_ROUTING_KEY 라는 주소가 적힌 것만 분류 해라
+    }
+
+    @Bean
+    public MessageConverter jacksonJsonMessageConverter (ObjectMapper objectMapper) {
+        // Jackson2JsonMessageConverter를 objectMapper로 생성해서 return
+        return new JacksonJsonMessageConverter((JsonMapper) objectMapper);
+    }
+
+    @Bean
+    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory, MessageConverter messageConverter) {
+        // 1. RabbitTemplate을 connectionFactory로 생성
+        // 2. setMessageConverter()로 JSON 컨버터 세팅
+        // 3. return
+
+        RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
+        rabbitTemplate.setMessageConverter(messageConverter);
+        return rabbitTemplate;
     }
 }

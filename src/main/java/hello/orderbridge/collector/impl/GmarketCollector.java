@@ -86,7 +86,7 @@ public class GmarketCollector implements ChannelCollector {
         return new RawOrderItemDto(
                 order.getSiteGoodsNo(),
                 order.getGoodsName(),
-                null,
+                order.getSiteGoodsNo(),
                 order.getContrAmount(),
                 (int) Double.parseDouble(order.getSalePrice())
         );
