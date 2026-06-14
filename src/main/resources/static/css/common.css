@@ -1,0 +1,30 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; }
+
+.header { background: #fff; padding: 16px 32px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center; }
+.header h1 { font-size: 20px; color: #333; }
+.header-right { display: flex; gap: 16px; align-items: center; }
+.header-right a,
+.header a { color: #888; text-decoration: none; font-size: 14px; }
+.header-right a:hover,
+.header a:hover { color: #4a90d9; }
+
+.container { max-width: 1200px; margin: 24px auto; padding: 0 16px; }
+
+table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+thead { background: #f8f9fa; }
+th { padding: 10px 12px; text-align: left; font-size: 13px; color: #666; font-weight: 600; border-bottom: 1px solid #eee; }
+td { padding: 10px 12px; font-size: 13px; color: #333; border-bottom: 1px solid #f0f0f0; }
+
+.status { padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+.status-COLLECTED { background: #e8f0fe; color: #1a73e8; }
+.status-PROCESSING { background: #fef7e0; color: #e8a800; }
+.status-WMS_SENT { background: #e6f4ea; color: #1e8e3e; }
+.status-WMS_FAILED { background: #fce8e6; color: #d93025; }
+.status-COMPLETED { background: #e8f0fe; color: #1a73e8; }
+.status-NORMAL { background: #e6f4ea; color: #1e8e3e; }
+.status-CANCELLED { background: #fce8e6; color: #d93025; }
+.status-SUCCESS { background: #e6f4ea; color: #1e8e3e; }
+.status-FAILED { background: #fce8e6; color: #d93025; }
+.status-EXHAUSTED { background: #fce8e6; color: #d93025; }
+.status-PENDING { background: #fef7e0; color: #e8a800; }

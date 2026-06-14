@@ -17,6 +17,8 @@ public class WmsClient {
     public WmsResponse send(WmsRequest request) {
         log.info("[WMS] 전송시도: {}", request.channelOrderNo());
 
+//        try { Thread.sleep(5000); } catch (InterruptedException ignored) {} // TODO: SSE 테스트용 임시 딜레이 (로컬환경이라...)
+
         if (random.nextInt(100) < 80) {
             String wmsOrderNo = "WMS-" + UUID.randomUUID();
             log.info("[WMS] 전송 성공: {} -> {}", request.channelOrderNo(), wmsOrderNo);
