@@ -41,7 +41,6 @@ public class OrderItem extends BaseEntity {
     private ItemStatus itemStatus;
 
     public static OrderItem of(
-            Order order,
             String productName,
             String productCode,
             String sellerCode,
@@ -49,7 +48,6 @@ public class OrderItem extends BaseEntity {
             int unitPrice
     ) {
         OrderItem item = new OrderItem();
-        item.order = order;
         item.productName = productName;
         item.productCode = productCode;
         item.sellerCode = sellerCode;
@@ -61,5 +59,9 @@ public class OrderItem extends BaseEntity {
 
     public void changeStatus(ItemStatus newStatus) {
         this.itemStatus = newStatus;
+    }
+
+    public void assignOrder(Order order) {
+        this.order = order;
     }
 }
