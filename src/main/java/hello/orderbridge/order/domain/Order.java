@@ -101,4 +101,8 @@ public class Order extends BaseEntity {
         this.items.add(item);
         item.assignOrder(this);
     }
+
+    public void addWmsDelivery(WmsDelivery wmsDelivery) {
+        this.wmsDelivery = wmsDelivery;
+    }
 }
