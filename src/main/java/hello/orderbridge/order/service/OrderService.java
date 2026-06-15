@@ -3,6 +3,7 @@ package hello.orderbridge.order.service;
 import hello.orderbridge.order.domain.Order;
 import hello.orderbridge.order.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +19,7 @@ public class OrderService {
     /**
      * 주문 목록 조회
      */
+    @Cacheable(value = "orders", key = "'all'")
     public List<Order> getOrderList() {
         return orderRepository.findAll();
     }
@@ -26,6 +28,7 @@ public class OrderService {
      * 주문 상세 조회
      * @param id
      */
+    @Cacheable(value = "order", key = "#id")
     public Order getOrder(Long id) {
         return orderRepository.findById(id).orElseThrow(
                 () -> new RuntimeException("주문을 찾을 수 없습니다.")
