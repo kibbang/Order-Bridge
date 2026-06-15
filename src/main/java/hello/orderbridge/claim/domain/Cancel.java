@@ -1,6 +1,7 @@
 package hello.orderbridge.claim.domain;
 
 import hello.orderbridge.enums.claim.RefundMethod;
+import hello.orderbridge.enums.order.ItemStatus;
 import hello.orderbridge.order.domain.OrderItem;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -31,5 +32,15 @@ public class Cancel extends Claim {
         cancel.refundAmount = refundAmount;
         cancel.refundMethod = refundMethod;
         return cancel;
+    }
+
+    @Override
+    public ItemStatus getRequestedItemStatus() {
+        return ItemStatus.CANCEL_REQUESTED;
+    }
+
+    @Override
+    public ItemStatus getApprovedItemStatus() {
+        return ItemStatus.CANCEL_COMPLETED;
     }
 }

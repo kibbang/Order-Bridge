@@ -1,6 +1,7 @@
 package hello.orderbridge.claim.domain;
 
 import hello.orderbridge.enums.claim.RefundMethod;
+import hello.orderbridge.enums.order.ItemStatus;
 import hello.orderbridge.order.domain.OrderItem;
 import jakarta.persistence.*;
 
@@ -45,5 +46,15 @@ public class Return extends Claim {
 
     public void registerTrackingNo(String trackingNo) {
         this.trackingNo = trackingNo;
+    }
+
+    @Override
+    public ItemStatus getRequestedItemStatus() {
+        return ItemStatus.RETURN_REQUESTED;
+    }
+
+    @Override
+    public ItemStatus getApprovedItemStatus() {
+        return ItemStatus.RETURN_COMPLETED;
     }
 }

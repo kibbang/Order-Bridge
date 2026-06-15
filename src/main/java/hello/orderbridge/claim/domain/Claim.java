@@ -2,6 +2,7 @@ package hello.orderbridge.claim.domain;
 
 import hello.orderbridge.common.domain.BaseEntity;
 import hello.orderbridge.enums.claim.ClaimStatus;
+import hello.orderbridge.enums.order.ItemStatus;
 import hello.orderbridge.order.domain.OrderItem;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -37,6 +38,10 @@ public abstract class Claim extends BaseEntity {
         this.reason = reason;
         this.status = REQUESTED;
     }
+
+    public abstract ItemStatus getRequestedItemStatus();
+
+    public abstract ItemStatus getApprovedItemStatus();
 
     public void approve() {
         this.status = APPROVED;
