@@ -17,12 +17,16 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.SetOperations;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static hello.orderbridge.config.RedisConfig.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
@@ -35,14 +39,23 @@ class OrderCollectServiceTest {
     @Mock
     OrderProducer orderProducer;
 
+    @Mock
+    RedisTemplate<String, Object> redisTemplate;
+
+    @Mock
+    SetOperations<String, Object> setOperations;
+
     @InjectMocks
     OrderCollectService orderCollectService;
 
     Channel channel;
+    String redisKey;
 
     @BeforeEach
     void setUp() {
         channel = Channel.of("쿠팡", ChannelType.COUPANG, "test-api-key");
+        redisKey = COLLECTED_KEY_PREFIX + ChannelType.COUPANG.name();
+        given(redisTemplate.opsForSet()).willReturn(setOperations);
     }
 
     @Test
@@ -51,7 +64,7 @@ class OrderCollectServiceTest {
         RawOrderDto rawOrder = createRawOrder("ORD-001", List.of(
                 new RawOrderItemDto("P001", "상품A", "S001", 1, 10000)
         ));
-        given(orderRepository.existsByChannelOrderNo("ORD-001")).willReturn(false);
+        given(setOperations.add(eq(redisKey), eq("ORD-001"))).willReturn(1L);
 
         // When
         orderCollectService.saveOrders(channel, List.of(rawOrder));
@@ -68,18 +81,19 @@ class OrderCollectServiceTest {
     }
 
     @Test
-    void 중복_주문은_저장하지_않는다() {
+    void Redis_Set으로_중복_주문을_필터링한다() {
         // Given
         RawOrderDto rawOrder = createRawOrder("ORD-DUP", List.of(
                 new RawOrderItemDto("P001", "상품A", "S001", 1, 10000)
         ));
-        given(orderRepository.existsByChannelOrderNo("ORD-DUP")).willReturn(true);
+        given(setOperations.add(eq(redisKey), eq("ORD-DUP"))).willReturn(0L);
 
         // When
         orderCollectService.saveOrders(channel, List.of(rawOrder));
 
         // Then
         verify(orderRepository, never()).save(any());
+        verify(orderProducer, never()).publish(any());
     }
 
     @Test
@@ -88,7 +102,7 @@ class OrderCollectServiceTest {
         RawOrderDto rawOrder = createRawOrder("ORD-002", List.of(
                 new RawOrderItemDto("P001", "상품A", "S001", 3, 5000)
         ));
-        given(orderRepository.existsByChannelOrderNo("ORD-002")).willReturn(false);
+        given(setOperations.add(eq(redisKey), eq("ORD-002"))).willReturn(1L);
 
         // When
         orderCollectService.saveOrders(channel, List.of(rawOrder));
@@ -110,7 +124,7 @@ class OrderCollectServiceTest {
         RawOrderDto rawOrder = createRawOrder("ORD-003", List.of(
                 new RawOrderItemDto("P001", "상품A", "S001", 1, 10000)
         ));
-        given(orderRepository.existsByChannelOrderNo("ORD-003")).willReturn(false);
+        given(setOperations.add(eq(redisKey), eq("ORD-003"))).willReturn(1L);
 
         // When
         orderCollectService.saveOrders(channel, List.of(rawOrder));
@@ -131,8 +145,8 @@ class OrderCollectServiceTest {
         RawOrderDto dupOrder = createRawOrder("ORD-DUP", List.of(
                 new RawOrderItemDto("P002", "상품B", "S002", 1, 20000)
         ));
-        given(orderRepository.existsByChannelOrderNo("ORD-NEW")).willReturn(false);
-        given(orderRepository.existsByChannelOrderNo("ORD-DUP")).willReturn(true);
+        given(setOperations.add(eq(redisKey), eq("ORD-NEW"))).willReturn(1L);
+        given(setOperations.add(eq(redisKey), eq("ORD-DUP"))).willReturn(0L);
 
         // When
         orderCollectService.saveOrders(channel, List.of(newOrder, dupOrder));
@@ -148,7 +162,7 @@ class OrderCollectServiceTest {
                 new RawOrderItemDto("P001", "상품A", "S001", 1, 10000),
                 new RawOrderItemDto("P002", "상품B", "S002", 2, 5000)
         ));
-        given(orderRepository.existsByChannelOrderNo("ORD-004")).willReturn(false);
+        given(setOperations.add(eq(redisKey), eq("ORD-004"))).willReturn(1L);
 
         // When
         orderCollectService.saveOrders(channel, List.of(rawOrder));
@@ -167,7 +181,7 @@ class OrderCollectServiceTest {
         RawOrderDto rawOrder = createRawOrder("ORD-005", List.of(
                 new RawOrderItemDto("P001", "상품A", "S001", 1, 10000)
         ));
-        given(orderRepository.existsByChannelOrderNo("ORD-005")).willReturn(false);
+        given(setOperations.add(eq(redisKey), eq("ORD-005"))).willReturn(1L);
 
         // When
         orderCollectService.saveOrders(channel, List.of(rawOrder));
@@ -187,13 +201,28 @@ class OrderCollectServiceTest {
         RawOrderDto rawOrder = createRawOrder("ORD-DUP2", List.of(
                 new RawOrderItemDto("P001", "상품A", "S001", 1, 10000)
         ));
-        given(orderRepository.existsByChannelOrderNo("ORD-DUP2")).willReturn(true);
+        given(setOperations.add(eq(redisKey), eq("ORD-DUP2"))).willReturn(0L);
 
         // When
         orderCollectService.saveOrders(channel, List.of(rawOrder));
 
         // Then
         verify(orderProducer, never()).publish(any());
+    }
+
+    @Test
+    void 주문_저장_후_목록_캐시를_삭제한다() {
+        // Given
+        RawOrderDto rawOrder = createRawOrder("ORD-006", List.of(
+                new RawOrderItemDto("P001", "상품A", "S001", 1, 10000)
+        ));
+        given(setOperations.add(eq(redisKey), eq("ORD-006"))).willReturn(1L);
+
+        // When
+        orderCollectService.saveOrders(channel, List.of(rawOrder));
+
+        // Then
+        verify(redisTemplate).delete(CACHE_ORDERS_ALL_KEY);
     }
 
     private RawOrderDto createRawOrder(String channelOrderNo, List<RawOrderItemDto> items) {
