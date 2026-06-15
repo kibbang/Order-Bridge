@@ -9,13 +9,13 @@ CREATE TABLE claims (
 );
 
 CREATE TABLE cancels (
-    claim_id      BIGINT      PRIMARY KEY REFERENCES claims(id),
+    id            BIGINT      PRIMARY KEY REFERENCES claims(id),
     refund_amount INTEGER     NOT NULL,
     refund_method VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE returns (
-    claim_id       BIGINT       PRIMARY KEY REFERENCES claims(id),
+    id             BIGINT       PRIMARY KEY REFERENCES claims(id),
     pickup_address VARCHAR(255) NOT NULL,
     carrier_code   VARCHAR(50)  NOT NULL,
     tracking_no    VARCHAR(100),
@@ -24,7 +24,7 @@ CREATE TABLE returns (
 );
 
 CREATE TABLE exchanges (
-    claim_id              BIGINT       PRIMARY KEY REFERENCES claims(id),
+    id                    BIGINT       PRIMARY KEY REFERENCES claims(id),
     exchange_product_code VARCHAR(100) NOT NULL,
     delivery_address      VARCHAR(255) NOT NULL,
     carrier_code          VARCHAR(50)  NOT NULL,

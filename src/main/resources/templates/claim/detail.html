@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Bridge - 클레임 상세</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/detail.css}">
+    <link rel="stylesheet" th:href="@{/css/claim.css}">
+</head>
+<body>
+    <div class="header">
+        <h1><a th:href="@{/orders}" style="text-decoration:none;color:inherit">Order Bridge</a></h1>
+        <div class="header-right">
+            <a th:href="@{/claims}">클레임 목록</a>
+            <a th:href="@{/orders}">주문 목록</a>
+            <a th:href="@{/logout}">로그아웃</a>
+        </div>
+    </div>
+    <div class="container">
+
+        <div class="section">
+            <h2>클레임 정보</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="label">클레임 ID</div>
+                    <div class="value" th:text="${claim.id}"></div>
+                </div>
+                <div class="info-item">
+                    <div class="label">유형</div>
+                    <div class="value">
+                        <span class="claim-type" th:classappend="'type-' + ${claim.class.simpleName}" th:text="${claim.class.simpleName}"></span>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="label">상태</div>
+                    <div class="value">
+                        <span class="status" th:classappend="'status-' + ${claim.status}" th:text="${claim.status.label}"></span>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="label">사유</div>
+                    <div class="value" th:text="${claim.reason}"></div>
+                </div>
+                <div class="info-item">
+                    <div class="label">접수일시</div>
+                    <div class="value" th:text="${#temporals.format(claim.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>주문 상품 정보</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="label">주문번호</div>
+                    <div class="value">
+                        <a th:href="@{/orders/{id}(id=${claim.orderItem.order.id})}" th:text="${claim.orderItem.order.channelOrderNo}"></a>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="label">상품명</div>
+                    <div class="value" th:text="${claim.orderItem.productName}"></div>
+                </div>
+                <div class="info-item">
+                    <div class="label">상품코드</div>
+                    <div class="value" th:text="${claim.orderItem.productCode}"></div>
+                </div>
+                <div class="info-item">
+                    <div class="label">단가</div>
+                    <div class="value" th:text="|${#numbers.formatInteger(claim.orderItem.unitPrice, 1, 'COMMA')}원|"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cancel 상세 -->
+        <div class="section" th:if="${claim.class.simpleName == 'Cancel'}">
+            <h2>취소 상세</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="label">환불금액</div>
+                    <div class="value" th:text="|${#numbers.formatInteger(claim.refundAmount, 1, 'COMMA')}원|"></div>
+                </div>
+                <div class="info-item">
+                    <div class="label">환불수단</div>
+                    <div class="value" th:text="${claim.refundMethod}"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Return 상세 -->
+        <div class="section" th:if="${claim.class.simpleName == 'Return'}">
+            <h2>반품 상세</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="label">수거지 주소</div>
+                    <div class="value" th:text="${claim.pickupAddress}"></div>
+                </div>
+                <div class="info-item">
+                    <div class="label">택배사 코드</div>
+                    <div class="value" th:text="${claim.carrierCode}"></div>
+                </div>
+                <div class="info-item">
+                    <div class="label">운송장 번호</div>
+                    <div class="value" th:text="${claim.trackingNo} ?: '-'"></div>
+                </div>
+                <div class="info-item">
+                    <div class="label">환불금액</div>
+                    <div class="value" th:text="|${#numbers.formatInteger(claim.refundAmount, 1, 'COMMA')}원|"></div>
+                </div>
+                <div class="info-item">
+                    <div class="label">환불수단</div>
+                    <div class="value" th:text="${claim.refundMethod}"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Exchange 상세 -->
+        <div class="section" th:if="${claim.class.simpleName == 'Exchange'}">
+            <h2>교환 상세</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="label">교환 상품코드</div>
+                    <div class="value" th:text="${claim.exchangeProductCode}"></div>
+                </div>
+                <div class="info-item">
+                    <div class="label">배송지</div>
+                    <div class="value" th:text="${claim.deliveryAddress}"></div>
+                </div>
+                <div class="info-item">
+                    <div class="label">택배사 코드</div>
+                    <div class="value" th:text="${claim.carrierCode}"></div>
+                </div>
+                <div class="info-item">
+                    <div class="label">운송장 번호</div>
+                    <div class="value" th:text="${claim.trackingNo} ?: '-'"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 처리 버튼 -->
+        <div class="section action-section" th:if="${claim.status.name() == 'REQUESTED'}">
+            <h2>클레임 처리</h2>
+            <div class="action-buttons">
+                <form th:action="@{/claims/{id}/approve(id=${claim.id})}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-approve">승인</button>
+                </form>
+                <form th:action="@{/claims/{id}/reject(id=${claim.id})}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-reject">거절</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="section action-section" th:if="${claim.status.name() == 'APPROVED'}">
+            <h2>클레임 처리</h2>
+            <div class="action-buttons">
+                <form th:action="@{/claims/{id}/complete(id=${claim.id})}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-complete">처리 완료</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

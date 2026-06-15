@@ -5,12 +5,14 @@
     <title>Order Bridge - 주문 상세</title>
     <link rel="stylesheet" th:href="@{/css/common.css}">
     <link rel="stylesheet" th:href="@{/css/detail.css}">
+    <link rel="stylesheet" th:href="@{/css/claim.css}">
 </head>
 <body>
     <div class="header">
-        <h1>Order Bridge</h1>
+        <h1><a th:href="@{/orders}" style="text-decoration:none;color:inherit">Order Bridge</a></h1>
         <div class="header-right">
-            <a th:href="@{/orders}">목록으로</a>
+            <a th:href="@{/orders}">주문 목록</a>
+            <a th:href="@{/claims}">클레임 목록</a>
             <a th:href="@{/logout}">로그아웃</a>
         </div>
     </div>
@@ -57,7 +59,7 @@
                 </div>
                 <div class="info-item">
                     <div class="label">상태</div>
-                    <div class="value"><span class="status" th:classappend="'status-' + ${order.status}" th:text="${order.status}"></span></div>
+                    <div class="value"><span class="status" th:classappend="'status-' + ${order.status}" th:text="${order.status.label}"></span></div>
                 </div>
                 <div class="info-item">
                     <div class="label">주문일시</div>
@@ -76,18 +78,120 @@
                         <th>상품코드</th>
                         <th>단가</th>
                         <th>상태</th>
+                        <th>클레임</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="item : ${order.items}">
+                    <tr th:each="item, stat : ${order.items}">
                         <td th:text="${item.itemSeq}"></td>
                         <td th:text="${item.productName}"></td>
                         <td th:text="${item.productCode}"></td>
                         <td th:text="|${#numbers.formatInteger(item.unitPrice, 1, 'COMMA')}원|"></td>
-                        <td><span class="status" th:classappend="'status-' + ${item.itemStatus}" th:text="${item.itemStatus}"></span></td>
+                        <td><span class="status" th:classappend="'status-' + ${item.itemStatus}" th:text="${item.itemStatus.label}"></span></td>
+                        <td th:if="${item.itemStatus.name() == 'NORMAL'}">
+                            <button class="claim-form-toggle" th:onclick="|toggleClaimForm(${stat.index})|">접수</button>
+                        </td>
+                        <td th:if="${item.itemStatus.name() != 'NORMAL'}">-</td>
                     </tr>
                 </tbody>
             </table>
+        </div>
+
+        <div th:each="item, stat : ${order.items}" th:if="${item.itemStatus.name() == 'NORMAL'}">
+            <div class="claim-form" th:id="'claim-form-' + ${stat.index}">
+                <h3 th:text="|클레임 접수 - ${item.productName}|" style="font-size:14px; margin-bottom:12px;"></h3>
+
+                <div class="form-group">
+                    <label>클레임 유형</label>
+                    <select th:id="'claim-type-' + ${stat.index}" onchange="toggleClaimFields(this)">
+                        <option value="cancel">취소</option>
+                        <option value="return">반품</option>
+                        <option value="exchange">교환</option>
+                    </select>
+                </div>
+
+                <!-- 취소 폼 -->
+                <form th:action="@{/claims/cancel}" method="post" th:id="'form-cancel-' + ${stat.index}">
+                    <input type="hidden" name="orderItemId" th:value="${item.id}">
+                    <div class="form-group">
+                        <label>사유</label>
+                        <textarea name="reason" required></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>환불금액</label>
+                            <input type="number" name="refundAmount" th:value="${item.unitPrice}" required>
+                        </div>
+                        <div class="form-group">
+                            <label>환불수단</label>
+                            <select name="refundMethod">
+                                <option value="CARD">카드</option>
+                                <option value="BANK">계좌이체</option>
+                                <option value="POINT">포인트</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-submit">취소 접수</button>
+                </form>
+
+                <!-- 반품 폼 -->
+                <form th:action="@{/claims/return}" method="post" th:id="'form-return-' + ${stat.index}" style="display:none;">
+                    <input type="hidden" name="orderItemId" th:value="${item.id}">
+                    <div class="form-group">
+                        <label>사유</label>
+                        <textarea name="reason" required></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>수거지 주소</label>
+                            <input type="text" name="pickupAddress" required>
+                        </div>
+                        <div class="form-group">
+                            <label>택배사 코드</label>
+                            <input type="text" name="carrierCode" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>환불금액</label>
+                            <input type="number" name="refundAmount" th:value="${item.unitPrice}" required>
+                        </div>
+                        <div class="form-group">
+                            <label>환불수단</label>
+                            <select name="refundMethod">
+                                <option value="CARD">카드</option>
+                                <option value="BANK">계좌이체</option>
+                                <option value="POINT">포인트</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-submit">반품 접수</button>
+                </form>
+
+                <!-- 교환 폼 -->
+                <form th:action="@{/claims/exchange}" method="post" th:id="'form-exchange-' + ${stat.index}" style="display:none;">
+                    <input type="hidden" name="orderItemId" th:value="${item.id}">
+                    <div class="form-group">
+                        <label>사유</label>
+                        <textarea name="reason" required></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>교환 상품코드</label>
+                            <input type="text" name="exchangeProductCode" required>
+                        </div>
+                        <div class="form-group">
+                            <label>배송지</label>
+                            <input type="text" name="deliveryAddress" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>택배사 코드</label>
+                        <input type="text" name="carrierCode" required>
+                    </div>
+                    <button type="submit" class="btn-submit">교환 접수</button>
+                </form>
+            </div>
         </div>
 
         <div class="section">
@@ -104,7 +208,7 @@
                 <tbody>
                     <tr th:each="history : ${order.statusHistories}">
                         <td th:text="${history.fromStatus}"></td>
-                        <td><span class="status" th:classappend="'status-' + ${history.toStatus}" th:text="${history.toStatus}"></span></td>
+                        <td><span class="status" th:classappend="'status-' + ${history.toStatus}" th:text="${history.toStatus.label}"></span></td>
                         <td th:text="${history.reason} ?: '-'"></td>
                         <td th:text="${#temporals.format(history.changedAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
                     </tr>
@@ -121,7 +225,7 @@
                 </div>
                 <div class="info-item">
                     <div class="label">상태</div>
-                    <div class="value"><span class="status" th:classappend="'status-' + ${order.wmsDelivery.status}" th:text="${order.wmsDelivery.status}"></span></div>
+                    <div class="value"><span class="status" th:classappend="'status-' + ${order.wmsDelivery.status}" th:text="${order.wmsDelivery.status.label}"></span></div>
                 </div>
                 <div class="info-item">
                     <div class="label">시도 횟수</div>
@@ -139,5 +243,20 @@
         </div>
 
     </div>
+    <script>
+        function toggleClaimForm(index) {
+            var form = document.getElementById('claim-form-' + index);
+            form.classList.toggle('active');
+        }
+
+        function toggleClaimFields(select) {
+            var index = select.id.split('-')[2];
+            var types = ['cancel', 'return', 'exchange'];
+            types.forEach(function(type) {
+                document.getElementById('form-' + type + '-' + index).style.display = 'none';
+            });
+            document.getElementById('form-' + select.value + '-' + index).style.display = 'block';
+        }
+    </script>
 </body>
 </html>

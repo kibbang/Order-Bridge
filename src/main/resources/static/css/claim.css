@@ -1,0 +1,28 @@
+.claim-type { padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+.type-Cancel { background: #fce8e6; color: #d93025; }
+.type-Return { background: #fef7e0; color: #e8a800; }
+.type-Exchange { background: #e8f0fe; color: #1a73e8; }
+
+.action-buttons { display: flex; gap: 12px; }
+.btn { padding: 10px 24px; border: none; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; }
+.btn-approve { background: #1e8e3e; color: #fff; }
+.btn-approve:hover { background: #167d34; }
+.btn-reject { background: #d93025; color: #fff; }
+.btn-reject:hover { background: #c22a1f; }
+.btn-complete { background: #1a73e8; color: #fff; }
+.btn-complete:hover { background: #1567d3; }
+
+.claim-form-toggle { padding: 6px 14px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; cursor: pointer; background: #fff; color: #555; }
+.claim-form-toggle:hover { background: #f8f9fa; }
+
+.claim-form { display: none; background: #f8f9fa; border-radius: 8px; padding: 20px; margin-top: 12px; }
+.claim-form.active { display: block; }
+.claim-form .form-group { margin-bottom: 12px; }
+.claim-form label { display: block; font-size: 12px; color: #666; margin-bottom: 4px; }
+.claim-form input,
+.claim-form select,
+.claim-form textarea { width: 100%; padding: 8px 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; }
+.claim-form textarea { resize: vertical; min-height: 60px; }
+.claim-form .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.claim-form .btn-submit { padding: 8px 20px; border: none; border-radius: 4px; font-size: 13px; font-weight: 600; cursor: pointer; margin-top: 8px; background: #1a73e8; color: #fff; }
+.claim-form .btn-submit:hover { background: #1567d3; }

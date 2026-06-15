@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Bridge - 클레임 목록</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/list.css}">
+</head>
+<body>
+    <div class="header">
+        <h1><a th:href="@{/orders}" style="text-decoration:none;color:inherit">Order Bridge</a></h1>
+        <div class="header-right">
+            <a th:href="@{/orders}">주문 목록</a>
+            <a th:href="@{/logout}">로그아웃</a>
+        </div>
+    </div>
+    <div class="container">
+        <div class="summary">
+            <div class="summary-card">
+                <div class="label">전체 클레임</div>
+                <div class="value" th:text="${#lists.size(claims)}">0</div>
+            </div>
+        </div>
+
+        <table th:if="${!#lists.isEmpty(claims)}">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>유형</th>
+                    <th>주문번호</th>
+                    <th>상품명</th>
+                    <th>사유</th>
+                    <th>상태</th>
+                    <th>접수일시</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="claim : ${claims}" th:onclick="|location.href='/claims/${claim.id}'|">
+                    <td th:text="${claim.id}"></td>
+                    <td>
+                        <span class="claim-type" th:classappend="'type-' + ${claim.class.simpleName}" th:text="${claim.class.simpleName}"></span>
+                    </td>
+                    <td th:text="${claim.orderItem.order.channelOrderNo}"></td>
+                    <td th:text="${claim.orderItem.productName}"></td>
+                    <td th:text="${claim.reason}"></td>
+                    <td><span class="status" th:classappend="'status-' + ${claim.status}" th:text="${claim.status.label}"></span></td>
+                    <td th:text="${#temporals.format(claim.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div th:if="${#lists.isEmpty(claims)}" class="empty-msg">
+            등록된 클레임이 없습니다.
+        </div>
+    </div>
+</body>
+</html>

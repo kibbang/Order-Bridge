@@ -28,3 +28,12 @@ td { padding: 10px 12px; font-size: 13px; color: #333; border-bottom: 1px solid 
 .status-FAILED { background: #fce8e6; color: #d93025; }
 .status-EXHAUSTED { background: #fce8e6; color: #d93025; }
 .status-PENDING { background: #fef7e0; color: #e8a800; }
+.status-REQUESTED { background: #fef7e0; color: #e8a800; }
+.status-APPROVED { background: #e8f0fe; color: #1a73e8; }
+.status-REJECTED { background: #fce8e6; color: #d93025; }
+.status-CANCEL_REQUESTED { background: #fce8e6; color: #d93025; }
+.status-CANCEL_COMPLETED { background: #fce8e6; color: #d93025; }
+.status-RETURN_REQUESTED { background: #fef7e0; color: #e8a800; }
+.status-RETURN_COMPLETED { background: #e6f4ea; color: #1e8e3e; }
+.status-EXCHANGE_REQUESTED { background: #e8f0fe; color: #1a73e8; }
+.status-EXCHANGE_COMPLETED { background: #e6f4ea; color: #1e8e3e; }

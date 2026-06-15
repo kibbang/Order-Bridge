@@ -1,10 +1,8 @@
 package hello.orderbridge.claim.domain;
 
+import hello.orderbridge.enums.order.ItemStatus;
 import hello.orderbridge.order.domain.OrderItem;
-import jakarta.persistence.Column;
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -28,8 +26,10 @@ public class Exchange extends Claim {
     private String trackingNo;
 
     public static Exchange of(
-            OrderItem orderItem, String reason,
-            String exchangeProductCode, String deliveryAddress,
+            OrderItem orderItem,
+            String reason,
+            String exchangeProductCode,
+            String deliveryAddress,
             String carrierCode
     ) {
         Exchange claim = new Exchange();
@@ -42,5 +42,15 @@ public class Exchange extends Claim {
 
     public void registerTrackingNo(String trackingNo) {
         this.trackingNo = trackingNo;
+    }
+
+    @Override
+    public ItemStatus getRequestedItemStatus() {
+        return ItemStatus.EXCHANGE_REQUESTED;
+    }
+
+    @Override
+    public ItemStatus getApprovedItemStatus() {
+        return ItemStatus.EXCHANGE_COMPLETED;
     }
 }
