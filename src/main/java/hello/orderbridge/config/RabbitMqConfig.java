@@ -1,14 +1,10 @@
 package hello.orderbridge.config;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.DirectExchange;
-import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.JacksonJsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
@@ -18,7 +14,7 @@ import tools.jackson.databind.json.JsonMapper;
 
 @Configuration
 @Slf4j
-/**
+/*
  * Spring AMQP의 기본 철학인 "게으른 생성(Lazy Declaration)"
  * 방식이기 때문에 Admin UI에서 아무 작업이 없으면 커넥션 조차도 생성해두지 않음
  *
@@ -37,6 +33,10 @@ public class RabbitMqConfig {
 
     // Routing Key 상수 (Exchange → Queue 연결 키)
     public static final String ORDERS_ROUTING_KEY = "orders.inbound";
+
+    public static final String ORDERS_DLQ = "orders.dlq";
+
+    public static final String ORDERS_DLX = "orders.dlx";
 
     public RabbitMqConfig() {
         // 이건 그냥 찍어두자.. 불안하니까
@@ -65,7 +65,11 @@ public class RabbitMqConfig {
      */
     @Bean
     public Queue ordersQueue() {
-        return new Queue(ORDERS_QUEUE);
+        return QueueBuilder
+                .durable(ORDERS_QUEUE)
+                .deadLetterExchange(ORDERS_DLX) // 실패한 메시지는 DLX로 보내라
+                .deadLetterRoutingKey(ORDERS_DLQ)
+                .build();
     }
 
     /**
@@ -89,9 +93,28 @@ public class RabbitMqConfig {
         // 1. RabbitTemplate을 connectionFactory로 생성
         // 2. setMessageConverter()로 JSON 컨버터 세팅
         // 3. return
-
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
         rabbitTemplate.setMessageConverter(messageConverter);
         return rabbitTemplate;
+    }
+
+    // ④ 반송 전용 Exchange — 메인 큐에서 reject된 메시지가 여기로 온다
+    @Bean
+    public DirectExchange deadLetterExchange() {
+        return new DirectExchange(ORDERS_DLX);
+    }
+
+    // ⑤ 반송 메시지 보관함 — DLX에서 라우팅된 실패 메시지가 여기 쌓인다
+    @Bean
+    public Queue deadLetterQueue() {
+        return QueueBuilder.durable(ORDERS_DLQ).build();
+    }
+
+    // ⑥ DLX → DLQ 연결 — "반송 우체국에 온 편지는 이 우체통에 넣어라"
+    @Bean
+    public Binding dlqBinding(DirectExchange deadLetterExchange, Queue deadLetterQueue) {
+        return BindingBuilder.bind(deadLetterQueue)
+                .to(deadLetterExchange)
+                .with(ORDERS_DLQ);
     }
 }

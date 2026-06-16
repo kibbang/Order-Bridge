@@ -7,7 +7,6 @@ import hello.orderbridge.order.repository.OrderRepository;
 import hello.orderbridge.pipeline.dto.OrderMessage;
 import hello.orderbridge.wms.WmsService;
 import io.micrometer.core.instrument.MeterRegistry;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -28,9 +27,13 @@ public class OrderConsumer {
     private final RedisTemplate<String, Object> redisTemplate;
     private final MeterRegistry meterRegistry;
 
-    public OrderConsumer(OrderRepository orderRepository, WmsService wmsService,
-                         OrderSseController orderSseController,
-                         RedisTemplate<String, Object> redisTemplate, MeterRegistry meterRegistry) {
+    public OrderConsumer(
+            OrderRepository orderRepository,
+            WmsService wmsService,
+            OrderSseController orderSseController,
+            RedisTemplate<String, Object> redisTemplate,
+            MeterRegistry meterRegistry
+    ) {
         this.orderRepository = orderRepository;
         this.wmsService = wmsService;
         this.orderSseController = orderSseController;
