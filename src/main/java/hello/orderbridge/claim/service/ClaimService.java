@@ -5,6 +5,7 @@ import hello.orderbridge.claim.domain.Claim;
 import hello.orderbridge.claim.domain.Exchange;
 import hello.orderbridge.claim.domain.Return;
 import hello.orderbridge.claim.dto.CancelRequest;
+import hello.orderbridge.claim.dto.ClaimSearchCondition;
 import hello.orderbridge.claim.dto.ExchangeRequest;
 import hello.orderbridge.claim.dto.ReturnRequest;
 import hello.orderbridge.claim.repository.ClaimRepository;
@@ -16,6 +17,8 @@ import hello.orderbridge.enums.order.ItemStatus;
 import hello.orderbridge.order.domain.OrderItem;
 import hello.orderbridge.order.repository.OrderItemRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,10 +34,9 @@ public class ClaimService {
 
     /**
      * 클레임 리스트 조회
-     * @return
      */
-    public List<Claim> getClaimList() {
-        return claimRepository.findAll();
+    public Page<Claim> getClaimList(ClaimSearchCondition condition, Pageable pageable) {
+        return claimRepository.search(condition, pageable);
     }
 
     /**

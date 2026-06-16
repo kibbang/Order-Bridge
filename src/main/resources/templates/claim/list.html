@@ -15,10 +15,19 @@
         </div>
     </div>
     <div class="container">
+        <form class="search-form" method="get" th:action="@{/claims}">
+            <select name="status">
+                <option value="">전체 상태</option>
+                <option th:each="s : ${claimStatuses}" th:value="${s}" th:text="${s.label}"
+                        th:selected="${condition.status == s}"></option>
+            </select>
+            <button type="submit" class="btn">검색</button>
+        </form>
+
         <div class="summary">
             <div class="summary-card">
                 <div class="label">전체 클레임</div>
-                <div class="value" th:text="${#lists.size(claims)}">0</div>
+                <div class="value" th:text="${page.totalElements}">0</div>
             </div>
         </div>
 
@@ -48,6 +57,23 @@
                 </tr>
             </tbody>
         </table>
+
+        <div class="pagination" th:if="${page.totalPages > 1}">
+            <a th:if="${!page.first}"
+               th:href="@{/claims(page=${page.number - 1}, size=${page.size},
+                         status=${condition.status})}">&laquo; 이전</a>
+
+            <th:block th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}">
+                <a th:classappend="${i == page.number} ? 'active'"
+                   th:href="@{/claims(page=${i}, size=${page.size},
+                             status=${condition.status})}"
+                   th:text="${i + 1}"></a>
+            </th:block>
+
+            <a th:if="${!page.last}"
+               th:href="@{/claims(page=${page.number + 1}, size=${page.size},
+                         status=${condition.status})}">다음 &raquo;</a>
+        </div>
 
         <div th:if="${#lists.isEmpty(claims)}" class="empty-msg">
             등록된 클레임이 없습니다.

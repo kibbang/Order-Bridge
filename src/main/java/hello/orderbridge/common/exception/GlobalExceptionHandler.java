@@ -1,9 +1,12 @@
 package hello.orderbridge.common.exception;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @Slf4j
 @ControllerAdvice
@@ -15,6 +18,13 @@ public class GlobalExceptionHandler {
         log.warn("[{}] {}", errorCode.getCode(), errorCode.getMessage());
 
         model.addAttribute("error", ErrorResponse.of(errorCode));
+        return "error/business";
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String handleNoResourceFound(NoResourceFoundException e) {
+        log.debug("정적 리소스 없음: {}", e.getResourcePath());
         return "error/business";
     }
 

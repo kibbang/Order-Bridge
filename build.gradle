@@ -29,6 +29,10 @@ dependencies {
     implementation 'org.springframework.amqp:spring-rabbit-stream'
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
     implementation 'org.springframework.boot:spring-boot-starter-flyway'
+    // QueryDSL (OpenFeign fork)
+    implementation 'io.github.openfeign.querydsl:querydsl-core:7.4.0'
+    implementation 'io.github.openfeign.querydsl:querydsl-jpa:7.4.0'
+    annotationProcessor 'io.github.openfeign.querydsl:querydsl-apt:7.4.0:jpa'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'org.postgresql:postgresql'
     runtimeOnly 'org.flywaydb:flyway-database-postgresql'

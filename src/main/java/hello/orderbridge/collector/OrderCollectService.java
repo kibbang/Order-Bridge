@@ -37,6 +37,10 @@ public class OrderCollectService {
                 return;
             }
 
+            if (orderRepository.existsByChannelOrderNo(rawOrder.channelOrderNo())) {
+                return;
+            }
+
             Order order = Order.of(
                     rawOrder.channelOrderNo(),
                     channel,
