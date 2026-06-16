@@ -1,3 +1,14 @@
+.search-form { display: flex; gap: 10px; margin-bottom: 20px; align-items: center; background: #fff; padding: 16px 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); flex-wrap: wrap; }
+.search-form select, .search-form input[type="date"] { padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; color: #333; background: #fff; }
+.search-form select:focus, .search-form input[type="date"]:focus { outline: none; border-color: #4a6cf7; }
+.search-form .btn { padding: 8px 20px; background: #4a6cf7; color: #fff; border: none; border-radius: 6px; font-size: 14px; cursor: pointer; }
+.search-form .btn:hover { background: #3a5ce5; }
+
+.pagination { display: flex; justify-content: center; gap: 4px; margin-top: 24px; }
+.pagination a { display: inline-flex; align-items: center; justify-content: center; min-width: 36px; height: 36px; padding: 0 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; color: #555; text-decoration: none; background: #fff; }
+.pagination a:hover { background: #f0f2ff; border-color: #4a6cf7; color: #4a6cf7; }
+.pagination a.active { background: #4a6cf7; color: #fff; border-color: #4a6cf7; }
+
 .summary { display: flex; gap: 16px; margin-bottom: 24px; }
 .summary-card { background: #fff; padding: 20px 24px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); flex: 1; }
 .summary-card .label { font-size: 13px; color: #888; margin-bottom: 4px; }

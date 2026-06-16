@@ -2,13 +2,14 @@ package hello.orderbridge.order.service;
 
 import hello.orderbridge.common.exception.OrderNotFoundException;
 import hello.orderbridge.order.domain.Order;
+import hello.orderbridge.order.dto.OrderSearchCondition;
 import hello.orderbridge.order.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -20,9 +21,8 @@ public class OrderService {
     /**
      * 주문 목록 조회
      */
-    @Cacheable(value = "orders", key = "'all'")
-    public List<Order> getOrderList() {
-        return orderRepository.findAll();
+    public Page<Order> getOrderList(OrderSearchCondition condition, Pageable pageable) {
+        return orderRepository.search(condition, pageable);
     }
 
     /**

@@ -1,5 +1,6 @@
 package hello.orderbridge.order.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import hello.orderbridge.channel.domain.Channel;
 import hello.orderbridge.common.domain.BaseEntity;
 import hello.orderbridge.enums.order.OrderStatus;
@@ -59,12 +60,15 @@ public class Order extends BaseEntity {
     private LocalDateTime orderedAt;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<OrderItem> items = new ArrayList<>();
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<OrderStatusHistory> statusHistories = new ArrayList<>();
 
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private WmsDelivery wmsDelivery;
 
     public static Order of(

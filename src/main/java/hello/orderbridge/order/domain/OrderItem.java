@@ -1,5 +1,6 @@
 package hello.orderbridge.order.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import hello.orderbridge.common.domain.BaseEntity;
 import hello.orderbridge.enums.order.ItemStatus;
 import jakarta.persistence.*;
@@ -19,6 +20,7 @@ public class OrderItem extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
+    @JsonBackReference
     private Order order;
 
     @Column(nullable = false)
