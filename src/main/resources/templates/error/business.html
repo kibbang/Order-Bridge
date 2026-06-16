@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>오류</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="container">
+    <h1>오류가 발생했습니다</h1>
+    <div class="error-box">
+        <p class="error-code" th:text="${error.code}"></p>
+        <p class="error-message" th:text="${error.message}"></p>
+    </div>
+    <a href="/" class="btn">메인으로 돌아가기</a>
+</div>
+</body>
+</html>

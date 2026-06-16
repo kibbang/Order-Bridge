@@ -8,6 +8,7 @@ import hello.orderbridge.collector.dto.RawOrderItemDto;
 import hello.orderbridge.collector.dto.external.ebay.gmarket.GmarketOrder;
 import hello.orderbridge.collector.dto.external.ebay.gmarket.GmarketOrderData;
 import hello.orderbridge.collector.dto.external.ebay.gmarket.GmarketOrderResponse;
+import hello.orderbridge.common.exception.OrderCollectException;
 import hello.orderbridge.enums.channel.ChannelType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ClassPathResource;
@@ -40,7 +41,7 @@ public class GmarketCollector implements ChannelCollector {
             return data.getRequestOrders().stream().map(this::toRawOrderDto).toList();
 
         } catch (IOException e) {
-            throw new RuntimeException("G마켓 목업 파일 리딩 실패", e);
+            throw new OrderCollectException();
         }
     }
 
