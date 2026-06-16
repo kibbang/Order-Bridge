@@ -29,6 +29,7 @@ dependencies {
     implementation 'org.springframework.amqp:spring-rabbit-stream'
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
     implementation 'org.springframework.boot:spring-boot-starter-flyway'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.0'
     // QueryDSL (OpenFeign fork)
     implementation 'io.github.openfeign.querydsl:querydsl-core:7.4.0'
     implementation 'io.github.openfeign.querydsl:querydsl-jpa:7.4.0'

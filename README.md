@@ -34,6 +34,9 @@
 - **실시간 모니터링** - SSE 기반 관리페이지 실시간 주문 현황
 - **클레임 처리** - 취소/반품/교환 CTI 다형성 구조
 - **Redis 캐싱** - 주문 조회 캐싱 (`@Cacheable`) + 주문 중복 수집 방지 (Set) + 메시지 멱등성 보장 (SETNX)
+- **예외 처리** - `@ControllerAdvice` / `@RestControllerAdvice` 분리, 커스텀 예외 계층, AOP 에러 로깅
+- **페이징 + 검색** - QueryDSL 동적 쿼리, 채널/상태/날짜 필터링
+- **REST API** - `/api/v1/orders` 엔드포인트, DTO 응답 분리, Swagger UI 문서 자동 생성
 
 ---
 
@@ -96,7 +99,8 @@ order-bridge/
 │   ├── pipeline/        # RabbitMQ 발행/소비
 │   ├── wms/             # WMS 전달
 │   ├── config/          # 설정 (RabbitMQ, Redis, Security)
-│   └── common/          # 공통 (BaseEntity, LoginController)
+│   ├── enums/           # 상태 Enum (OrderStatus, ItemStatus 등)
+│   └── common/          # 공통 (BaseEntity, ApiResponse, 예외 처리)
 ├── src/main/resources/
 │   ├── db/migration/    # Flyway SQL
 │   ├── application.yml
@@ -160,6 +164,7 @@ docker compose down -v
 | 서비스 | URL |
 |---|---|
 | 관리페이지 | http://localhost:8080 |
+| Swagger UI (API 문서) | http://localhost:8080/swagger-ui/index.html |
 | RabbitMQ 관리 UI | http://localhost:15672 |
 
 ---
@@ -174,9 +179,9 @@ docker compose down -v
 - [x] Mission 6 - 관리페이지 (Thymeleaf + SSE)
 - [x] Mission 7 - 클레임 처리 (취소/반품/교환)
 - [x] Mission 8 - Redis 활용 (캐싱/중복 방지)
-- [ ] Mission 9 - 예외 처리 + AOP 에러 로깅 (@ControllerAdvice, 커스텀 예외, @Around)
-- [ ] Mission 10 - 페이징 + 검색 (Pageable, 채널/상태/날짜 필터링)
-- [ ] Mission 11 - REST API 분리 (/api/v1, Swagger)
+- [x] Mission 9 - 예외 처리 + AOP 에러 로깅 (@ControllerAdvice, 커스텀 예외, @Around)
+- [x] Mission 10 - 페이징 + 검색 (QueryDSL, 채널/상태/날짜 필터링)
+- [x] Mission 11 - REST API 분리 (/api/v1, Swagger)
 - [ ] Mission 12 - Actuator + Prometheus + Grafana (모니터링 대시보드)
 - [ ] Mission 13 - DLQ + 실패 관리 (RabbitMQ Dead Letter Queue)
 - [ ] Mission 14 - 테스트 강화 (Testcontainers 통합 테스트)
