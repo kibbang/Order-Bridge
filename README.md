@@ -16,6 +16,9 @@
 ![Thymeleaf](https://img.shields.io/badge/Thymeleaf-3.x-005F0F?style=for-the-badge&logo=thymeleaf&logoColor=white)
 ![Gradle](https://img.shields.io/badge/Gradle-Groovy-02303A?style=for-the-badge&logo=gradle&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![Prometheus](https://img.shields.io/badge/Prometheus-E6522C?style=for-the-badge&logo=prometheus&logoColor=white)
+![Grafana](https://img.shields.io/badge/Grafana-F46800?style=for-the-badge&logo=grafana&logoColor=white)
+![Testcontainers](https://img.shields.io/badge/Testcontainers-2.x-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 
 ---
 
@@ -37,6 +40,9 @@
 - **예외 처리** - `@ControllerAdvice` / `@RestControllerAdvice` 분리, 커스텀 예외 계층, AOP 에러 로깅
 - **페이징 + 검색** - QueryDSL 동적 쿼리, 채널/상태/날짜 필터링
 - **REST API** - `/api/v1/orders` 엔드포인트, DTO 응답 분리, Swagger UI 문서 자동 생성
+- **모니터링** - Actuator + Prometheus + Grafana 대시보드 (주문 수집량, WMS 전달 성공/실패, 처리 시간)
+- **DLQ 실패 관리** - RabbitMQ Dead Letter Queue + 재처리 API (`/api/v1/dlq`)
+- **테스트** - Testcontainers 통합 테스트 (PostgreSQL, RabbitMQ), MockMvc 컨트롤러 테스트, Mockito 단위 테스트
 
 ---
 
@@ -106,6 +112,13 @@ order-bridge/
 │   ├── application.yml
 │   ├── templates/       # Thymeleaf (login, order/list, order/detail)
 │   └── static/          # CSS, JS (SSE)
+├── src/test/java/hello/orderbridge/
+│   ├── config/          # Testcontainers 설정
+│   ├── order/           # Repository 통합 테스트, Controller MockMvc 테스트
+│   ├── pipeline/        # DlqController MockMvc 테스트
+│   └── collector/       # Scheduler 단위 테스트
+├── monitoring/
+│   └── prometheus.yml   # Prometheus 스크래핑 설정
 ├── .env.example
 ├── Dockerfile
 └── docker-compose.yml
@@ -166,6 +179,8 @@ docker compose down -v
 | 관리페이지 | http://localhost:8080 |
 | Swagger UI (API 문서) | http://localhost:8080/swagger-ui/index.html |
 | RabbitMQ 관리 UI | http://localhost:15672 |
+| Prometheus | http://localhost:9090 |
+| Grafana | http://localhost:3000 (admin/admin) |
 
 ---
 
@@ -182,6 +197,6 @@ docker compose down -v
 - [x] Mission 9 - 예외 처리 + AOP 에러 로깅 (@ControllerAdvice, 커스텀 예외, @Around)
 - [x] Mission 10 - 페이징 + 검색 (QueryDSL, 채널/상태/날짜 필터링)
 - [x] Mission 11 - REST API 분리 (/api/v1, Swagger)
-- [ ] Mission 12 - Actuator + Prometheus + Grafana (모니터링 대시보드)
-- [ ] Mission 13 - DLQ + 실패 관리 (RabbitMQ Dead Letter Queue)
-- [ ] Mission 14 - 테스트 강화 (Testcontainers 통합 테스트)
+- [x] Mission 12 - Actuator + Prometheus + Grafana (모니터링 대시보드)
+- [x] Mission 13 - DLQ + 실패 관리 (RabbitMQ Dead Letter Queue)
+- [x] Mission 14 - 테스트 강화 (Testcontainers 통합 테스트, MockMvc 컨트롤러 테스트)

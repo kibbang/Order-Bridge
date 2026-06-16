@@ -5,6 +5,8 @@ import hello.orderbridge.channel.repository.ChannelRepository;
 import hello.orderbridge.collector.dto.RawOrderDto;
 import hello.orderbridge.collector.dto.RawOrderItemDto;
 import hello.orderbridge.enums.channel.ChannelType;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -13,7 +15,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
@@ -40,8 +41,9 @@ class OrderCollectSchedulerTest {
         given(coupangCollector.collect(coupang)).willReturn(mockOrders);
         given(channelRepository.findByIsActiveTrue()).willReturn(List.of(coupang));
 
+        MeterRegistry meterRegistry = new SimpleMeterRegistry();
         OrderCollectScheduler scheduler = new OrderCollectScheduler(
-                List.of(coupangCollector), channelRepository, orderCollectService
+                List.of(coupangCollector), channelRepository, orderCollectService, meterRegistry
         );
 
         // When
@@ -65,8 +67,9 @@ class OrderCollectSchedulerTest {
 
         given(channelRepository.findByIsActiveTrue()).willReturn(List.of(smartStore));
 
+        MeterRegistry meterRegistry = new SimpleMeterRegistry();
         OrderCollectScheduler scheduler = new OrderCollectScheduler(
-                List.of(coupangCollector), channelRepository, orderCollectService
+                List.of(coupangCollector), channelRepository, orderCollectService, meterRegistry
         );
 
         // When
@@ -88,8 +91,9 @@ class OrderCollectSchedulerTest {
 
         given(channelRepository.findByIsActiveTrue()).willReturn(List.of());
 
+        MeterRegistry meterRegistry = new SimpleMeterRegistry();
         OrderCollectScheduler scheduler = new OrderCollectScheduler(
-                List.of(coupangCollector), channelRepository, orderCollectService
+                List.of(coupangCollector), channelRepository, orderCollectService, meterRegistry
         );
 
         // When
