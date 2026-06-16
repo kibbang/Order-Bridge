@@ -33,6 +33,8 @@ dependencies {
     // QueryDSL (OpenFeign fork)
     implementation 'io.github.openfeign.querydsl:querydsl-core:7.4.0'
     implementation 'io.github.openfeign.querydsl:querydsl-jpa:7.4.0'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
     annotationProcessor 'io.github.openfeign.querydsl:querydsl-apt:7.4.0:jpa'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'org.postgresql:postgresql'

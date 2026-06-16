@@ -6,6 +6,7 @@ import hello.orderbridge.order.controller.OrderSseController;
 import hello.orderbridge.order.repository.OrderRepository;
 import hello.orderbridge.pipeline.dto.OrderMessage;
 import hello.orderbridge.wms.WmsService;
+import io.micrometer.core.instrument.MeterRegistry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -18,7 +19,6 @@ import java.time.Duration;
 import static hello.orderbridge.config.RedisConfig.*;
 
 @Component
-@RequiredArgsConstructor
 @Slf4j
 public class OrderConsumer {
 
@@ -26,6 +26,19 @@ public class OrderConsumer {
     private final WmsService wmsService;
     private final OrderSseController orderSseController;
     private final RedisTemplate<String, Object> redisTemplate;
+    private final MeterRegistry meterRegistry;
+
+    public OrderConsumer(OrderRepository orderRepository, WmsService wmsService,
+                         OrderSseController orderSseController,
+                         RedisTemplate<String, Object> redisTemplate, MeterRegistry meterRegistry) {
+        this.orderRepository = orderRepository;
+        this.wmsService = wmsService;
+        this.orderSseController = orderSseController;
+        this.redisTemplate = redisTemplate;
+        this.meterRegistry = meterRegistry;
+
+        meterRegistry.timer("order.processing.time");
+    }
 
     @Transactional
     @RabbitListener(queues = RabbitMqConfig.ORDERS_QUEUE)
@@ -39,21 +52,24 @@ public class OrderConsumer {
             return;
         }
 
-        orderRepository.findById(message.orderId())
-                .ifPresentOrElse(
-                        order -> {
-                            order.changeStatus(OrderStatus.PROCESSING, "파이프라인 수신");
+        meterRegistry.timer("order.processing.time").record(() -> {
 
-                            wmsService.deliver(order);
-                            evictOrderCache(order.getId());
+            orderRepository.findById(message.orderId())
+                    .ifPresentOrElse(
+                            order -> {
+                                order.changeStatus(OrderStatus.PROCESSING, "파이프라인 수신");
 
-                            orderSseController.sendOrderUpdate(
-                                    order.getId(),
-                                    order.getStatus().name()
-                            );
-                        },
-                        () -> log.warn("주문을 찾을 수 없음: {}", message.orderId())
-                );
+                                wmsService.deliver(order);
+                                evictOrderCache(order.getId());
+
+                                orderSseController.sendOrderUpdate(
+                                        order.getId(),
+                                        order.getStatus().name()
+                                );
+                            },
+                            () -> log.warn("주문을 찾을 수 없음: {}", message.orderId())
+                    );
+        });
     }
 
     public void evictOrderCache(Long orderId) {
