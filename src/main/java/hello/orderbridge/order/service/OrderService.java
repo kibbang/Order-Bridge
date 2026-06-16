@@ -1,5 +1,6 @@
 package hello.orderbridge.order.service;
 
+import hello.orderbridge.common.exception.OrderNotFoundException;
 import hello.orderbridge.order.domain.Order;
 import hello.orderbridge.order.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,7 @@ public class OrderService {
     @Cacheable(value = "order", key = "#id")
     public Order getOrder(Long id) {
         return orderRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("주문을 찾을 수 없습니다.")
+                OrderNotFoundException::new
         );
     }
 }

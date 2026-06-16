@@ -8,6 +8,7 @@ import hello.orderbridge.collector.dto.RawOrderItemDto;
 import hello.orderbridge.collector.dto.external.ebay.auction.AuctionOrder;
 import hello.orderbridge.collector.dto.external.ebay.auction.AuctionOrderData;
 import hello.orderbridge.collector.dto.external.ebay.auction.AuctionOrderResponse;
+import hello.orderbridge.common.exception.OrderCollectException;
 import hello.orderbridge.enums.channel.ChannelType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ClassPathResource;
@@ -40,7 +41,7 @@ public class AuctionCollector implements ChannelCollector {
             return data.getRequestOrders().stream().map(this::toRawOrderDto).toList();
 
         } catch (IOException e) {
-            throw new RuntimeException("옥션 목업 파일 리딩 실패", e);
+            throw new OrderCollectException();
         }
     }
 

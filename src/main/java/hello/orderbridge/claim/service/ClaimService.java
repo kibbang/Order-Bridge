@@ -8,6 +8,9 @@ import hello.orderbridge.claim.dto.CancelRequest;
 import hello.orderbridge.claim.dto.ExchangeRequest;
 import hello.orderbridge.claim.dto.ReturnRequest;
 import hello.orderbridge.claim.repository.ClaimRepository;
+import hello.orderbridge.common.exception.ClaimNotFoundException;
+import hello.orderbridge.common.exception.DuplicateClaimException;
+import hello.orderbridge.common.exception.OrderItemNotFoundException;
 import hello.orderbridge.enums.claim.RefundMethod;
 import hello.orderbridge.enums.order.ItemStatus;
 import hello.orderbridge.order.domain.OrderItem;
@@ -40,7 +43,7 @@ public class ClaimService {
      * @return
      */
     public Claim getClaim(Long id) {
-        return claimRepository.findById(id).orElseThrow();
+        return claimRepository.findById(id).orElseThrow(ClaimNotFoundException::new);
     }
 
     /**
@@ -152,11 +155,13 @@ public class ClaimService {
      */
     private OrderItem getOrderItem(Long orderItemId) {
 
-        OrderItem orderItem = orderItemRepository.findById(orderItemId).orElseThrow();
+        OrderItem orderItem = orderItemRepository.findById(orderItemId)
+                .orElseThrow(OrderItemNotFoundException::new);
 
         if (orderItem.getItemStatus() != ItemStatus.NORMAL) {
-            throw new IllegalStateException("이미 클레임이 접수된 상품입니다.");
+            throw new DuplicateClaimException();
         }
+
         return orderItem;
     }
 }

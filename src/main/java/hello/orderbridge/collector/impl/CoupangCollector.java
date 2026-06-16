@@ -6,6 +6,7 @@ import hello.orderbridge.collector.ChannelCollector;
 import hello.orderbridge.collector.dto.RawOrderDto;
 import hello.orderbridge.collector.dto.RawOrderItemDto;
 import hello.orderbridge.collector.dto.external.coupang.*;
+import hello.orderbridge.common.exception.OrderCollectException;
 import hello.orderbridge.enums.channel.ChannelType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ClassPathResource;
@@ -38,7 +39,7 @@ public class CoupangCollector implements ChannelCollector {
             return response.getData().stream().map(this::toRawOrderDto).toList();
 
         } catch (IOException e) {
-            throw new RuntimeException("쿠팡 목업 파일 리딩 실패", e);
+            throw new OrderCollectException();
         }
     }
 
